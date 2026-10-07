@@ -58,8 +58,25 @@ jobs:
         with:
           gradle-version: '8.7'
 
+      - name: Generate Gradle Wrapper 8.7
+        run: gradle wrapper --gradle-version 8.7 --distribution-type bin
+
+      - name: Commit Gradle Wrapper to repository
+        if: github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          if [ -n "$(git status --porcelain -- gradlew gradlew.bat gradle/wrapper)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add gradlew gradlew.bat gradle/wrapper
+            git commit -m "build: add Gradle Wrapper 8.7"
+            git push origin HEAD:main
+          else
+            echo "Gradle Wrapper already up to date"
+          fi
+
       - name: Build debug APK
-        run: gradle :app:assembleDebug --stacktrace
+        run: ./gradlew :app:assembleDebug --stacktrace
 
       - name: Read version and prepare release APKs
         id: version
