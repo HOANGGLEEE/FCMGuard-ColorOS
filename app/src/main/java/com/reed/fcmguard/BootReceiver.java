@@ -7,16 +7,20 @@ import android.os.Build;
 
 public class BootReceiver extends BroadcastReceiver {
     @Override public void onReceive(Context context, Intent intent) {
-        if (!SettingsGuard.isProtectionEnabled(context)) return;
+        if (!GuardPrefs.isEnabled(context)) return;
+
+        FcmReconnect.kick(context, Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())
+                ? "boot" : "package_replaced");
 
         Intent service = new Intent(context, GuardService.class);
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
-                    SettingsGuard.usePersistentNotification(context)) {
+                    GuardPrefs.usePersistentNotification(context)) {
                 context.startForegroundService(service);
             } else {
                 context.startService(service);
             }
-        } catch (Throwable ignored) {}
+        } catch (Throwable ignored) {
+        }
     }
 }
