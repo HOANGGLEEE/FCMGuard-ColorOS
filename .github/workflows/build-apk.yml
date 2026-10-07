@@ -2,7 +2,7 @@ name: Build APK
 
 on:
   push:
-    branches: [ main, 'feature/**', 'coloros-*' ]
+    branches: [ main, 'feature/**' ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
