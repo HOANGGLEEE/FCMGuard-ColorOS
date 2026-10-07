@@ -1,60 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">FCM Guard</string>
-    <string name="subtitle">Quiet FCM protection for HyperOS</string>
+    <string name="app_name">FCM Guard ColorOS</string>
+    <string name="subtitle">Giữ kết nối FCM của Google Play Services ổn định trên ColorOS</string>
+
+    <string name="language">Ngôn ngữ</string>
+    <string name="language_system_hint">Android phiên bản này chưa hỗ trợ trang ngôn ngữ riêng cho ứng dụng.</string>
+    <string name="follow_system">Theo hệ thống</string>
+    <string name="english">English</string>
+    <string name="simplified_chinese">简体中文</string>
+
+    <string name="protection_title">Bảo vệ FCM</string>
+    <string name="automatic_protection">Bảo vệ tự động</string>
+    <string name="automatic_protection_summary">Theo dõi sự kiện mạng, khởi động máy và mở khóa sau thời gian ngủ dài. Có heartbeat dự phòng mỗi 30 phút khi dịch vụ còn sống.</string>
+    <string name="persistent_notification">Dịch vụ nền thường trực</string>
+    <string name="persistent_notification_summary">Khuyến nghị bật để ColorOS khó dừng FCM Guard hơn. Thông báo nền ở mức ưu tiên thấp và không phát âm thanh.</string>
+
+    <string name="actions_title">FCM / Google Play Services</string>
+    <string name="wake_fcm">Reconnect FCM ngay</string>
+    <string name="open_fcm_diag">Mở FCM Diagnostics</string>
+
+    <string name="status_title">Trạng thái</string>
+    <string name="status_protected">Đang bảo vệ</string>
+    <string name="status_ready">Sẵn sàng</string>
+    <string name="status_attention">Cần kiểm tra</string>
+    <string name="status_enabled">Bảo vệ tự động: bật</string>
+    <string name="status_disabled">Bảo vệ tự động: tắt</string>
+    <string name="notification_mode_foreground">Watchdog: foreground service</string>
+    <string name="notification_mode_quiet">Watchdog: background-only</string>
+
+    <string name="current_value_title">Lần reconnect gần nhất</string>
+    <string name="last_reconnect_never">Chưa reconnect lần nào</string>
+    <string name="last_reconnect_value">%1$s
+Lý do: %2$s
+Tổng số lần: %3$d</string>
+
+    <string name="gms_installed">Google Play Services đã cài</string>
+    <string name="gms_missing">Không tìm thấy Google Play Services</string>
+    <string name="gms_doze_exempt">GMS đang được miễn tối ưu pin / Doze</string>
+    <string name="gms_doze_not_exempt">GMS không nằm trong danh sách miễn Doze</string>
+    <string name="gms_doze_unknown">Không đọc được trạng thái Doze của GMS</string>
+    <string name="fcm_connection_unverified">Kết nối FCM socket: app thường không thể xác minh trực tiếp, vì vậy không báo xanh giả</string>
+
+    <string name="service_started">Đã bật bảo vệ FCM</string>
+    <string name="service_stopped">Đã tắt bảo vệ FCM</string>
+    <string name="wake_sent">Đã gửi GTALK/MCS heartbeat</string>
+    <string name="wake_failed">Không gửi được heartbeat</string>
+    <string name="diagnostics_unavailable">Không mở được FCM Diagnostics trên bản Google Play Services này</string>
+
+    <string name="notification_channel_name">FCM Guard ColorOS</string>
+    <string name="notification_channel_description">Watchdog nền và FCM heartbeat recovery</string>
+    <string name="notification_active">Bảo vệ FCM đang hoạt động</string>
+    <string name="notification_reconnected">Đã reconnect FCM · %1$s</string>
+    <string name="reason_network">mạng thay đổi</string>
+    <string name="reason_wake">mở khóa sau sleep</string>
+    <string name="reason_fallback">heartbeat dự phòng 30 phút</string>
+    <string name="reason_start">watchdog khởi động</string>
+
+    <string name="coloros_title">ColorOS background</string>
+    <string name="coloros_summary">Mở thẳng các trang quản lý nền của OPlus. Nếu ROM chặn deep link, ứng dụng sẽ rơi về trang cài đặt hệ thống phù hợp.</string>
+    <string name="open_associated_launch">Associated launch</string>
+    <string name="open_battery_manager">Battery / Power manager</string>
+    <string name="coloros_settings_unavailable">Không mở được trang ColorOS này</string>
+
+    <string name="notification_permission_ok">Notification permission: OK</string>
+    <string name="notification_permission_missing">Notification permission: bị chặn</string>
+    <string name="notification_permission_legacy">Notification permission: hệ Android cũ</string>
+    <string name="app_doze_exempt">Doze exempt</string>
+    <string name="app_doze_normal">Doze bình thường</string>
+
+    <!-- Legacy resource names retained while the old HyperOS-only classes are removed in a later cleanup. -->
     <string name="label_key">Settings key</string>
     <string name="label_item">Required item</string>
     <string name="save_configuration">Save configuration</string>
     <string name="grant_modify">Grant Modify system settings</string>
     <string name="repair_now">Repair now</string>
-    <string name="wake_fcm">Wake FCM now</string>
-    <string name="open_fcm_diag">Open FCM diagnostics</string>
-    <string name="status_title">Status</string>
-    <string name="current_value_title">Current whitelist value</string>
-    <string name="language">Language</string>
-    <string name="follow_system">Follow system</string>
-    <string name="english">English</string>
-    <string name="simplified_chinese">简体中文</string>
-    <string name="default_key">MILLET_NO_RESTRICT_APP</string>
+    <string name="default_key">COLOROS_SMART_RECONNECT</string>
     <string name="default_required_item">com.google.android.gms</string>
-
-    <string name="protection_title">Protection</string>
-    <string name="automatic_protection">Automatic protection</string>
-    <string name="automatic_protection_summary">Event-driven monitoring of only the FCM whitelist key. A non-waking 30-minute fallback check is used only as insurance.</string>
-    <string name="persistent_notification">Persistent notification</string>
-    <string name="persistent_notification_summary">Recommended ON for maximum reliability. Turn it OFF to remove the ongoing notification and use background-only mode; HyperOS may then stop the service more easily.</string>
-    <string name="actions_title">Tools</string>
     <string name="advanced_title">Advanced configuration</string>
-
-    <string name="helper_text">Low-power design: the service no longer polls every 30 seconds, no longer watches unrelated system settings, and only sends an FCM reconnect request after an actual whitelist repair.</string>
-    <string name="note_text">Recommended on HyperOS: keep Autostart enabled and battery mode set to No restrictions. Developer options, USB debugging and Wireless debugging are not required.</string>
-
-    <string name="status_protected">Protected</string>
-    <string name="status_ready">Ready</string>
-    <string name="status_attention">Needs attention</string>
-    <string name="status_granted">Modify settings: granted</string>
-    <string name="status_not_granted">Modify settings: not granted</string>
-    <string name="status_enabled">Automatic protection: enabled</string>
-    <string name="status_disabled">Automatic protection: disabled</string>
-    <string name="present_yes">Required item present: yes</string>
-    <string name="present_no">Required item present: no</string>
-    <string name="notification_mode_foreground">Background mode: foreground service</string>
-    <string name="notification_mode_quiet">Background mode: quiet background-only</string>
-
-    <string name="saved">Configuration saved</string>
-    <string name="repaired">Repaired / protected</string>
-    <string name="already_protected">Already protected</string>
+    <string name="helper_text">Event-driven FCM protection for ColorOS.</string>
+    <string name="note_text">No root and no Shizuku.</string>
+    <string name="status_granted">Mode: normal app</string>
+    <string name="status_not_granted">Mode: normal app</string>
+    <string name="present_yes">Google Play Services: present</string>
+    <string name="present_no">Google Play Services: missing</string>
+    <string name="saved">Saved</string>
+    <string name="repaired">Reconnect requested</string>
+    <string name="already_protected">Protection active</string>
     <string name="missing_current">(missing)</string>
-    <string name="permission_missing">Modify system settings permission is not granted</string>
-    <string name="service_started">Automatic protection started</string>
-    <string name="service_stopped">Automatic protection stopped</string>
-    <string name="wake_sent">Heartbeat / reconnect broadcast sent</string>
-    <string name="diagnostics_unavailable">FCM diagnostics activity was not found</string>
-    <string name="write_rejected">System rejected the write</string>
+    <string name="permission_missing">Permission unavailable</string>
+    <string name="write_rejected">Write rejected</string>
     <string name="write_failed">Write failed: %1$s</string>
-
-    <string name="notification_channel_name">FCM Guard protection</string>
-    <string name="notification_channel_description">Low-priority notification used to keep automatic FCM protection reliable</string>
-    <string name="notification_active">Protection active · event-driven</string>
-    <string name="notification_repaired">Whitelist repaired · FCM protected</string>
+    <string name="notification_repaired">FCM reconnect requested</string>
 </resources>
