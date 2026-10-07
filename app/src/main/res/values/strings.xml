@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">FCM Guard ColorOS</string>
-    <string name="subtitle">Giữ kết nối FCM của Google Play Services ổn định trên ColorOS</string>
+    <string name="subtitle">Theo dõi và phục hồi đường push của Google Play Services</string>
+    <string name="core_badge">COLOROS · NO ROOT · NO SHIZUKU</string>
 
     <string name="language">Ngôn ngữ</string>
     <string name="language_system_hint">Android phiên bản này chưa hỗ trợ trang ngôn ngữ riêng cho ứng dụng.</string>
@@ -9,37 +10,71 @@
     <string name="english">English</string>
     <string name="simplified_chinese">简体中文</string>
 
-    <string name="protection_title">Bảo vệ FCM</string>
-    <string name="automatic_protection">Bảo vệ tự động</string>
-    <string name="automatic_protection_summary">Theo dõi sự kiện mạng, khởi động máy và mở khóa sau thời gian ngủ dài. Có heartbeat dự phòng mỗi 30 phút khi dịch vụ còn sống.</string>
-    <string name="persistent_notification">Dịch vụ nền thường trực</string>
-    <string name="persistent_notification_summary">Khuyến nghị bật để ColorOS khó dừng FCM Guard hơn. Thông báo nền ở mức ưu tiên thấp và không phát âm thanh.</string>
-
-    <string name="actions_title">FCM / Google Play Services</string>
-    <string name="wake_fcm">Reconnect FCM ngay</string>
-    <string name="open_fcm_diag">Mở FCM Diagnostics</string>
-
-    <string name="status_title">Trạng thái</string>
+    <string name="system_health_title">SYSTEM HEALTH</string>
     <string name="status_protected">Đang bảo vệ</string>
     <string name="status_ready">Sẵn sàng</string>
     <string name="status_attention">Cần kiểm tra</string>
-    <string name="status_enabled">Bảo vệ tự động: bật</string>
-    <string name="status_disabled">Bảo vệ tự động: tắt</string>
-    <string name="notification_mode_foreground">Watchdog: foreground service</string>
-    <string name="notification_mode_quiet">Watchdog: background-only</string>
+    <string name="status_badge_active">ACTIVE</string>
+    <string name="status_badge_ready">READY</string>
+    <string name="status_badge_check">CHECK</string>
+    <string name="status_summary_active">Watchdog và cơ chế heartbeat recovery đang hoạt động.</string>
+    <string name="status_summary_ready">Google Play Services đã sẵn sàng. Bật bảo vệ tự động để bắt đầu watchdog.</string>
+    <string name="status_summary_attention">Không tìm thấy Google Play Services hoặc trạng thái hệ thống cần kiểm tra.</string>
+    <string name="status_summary_placeholder">Đang kiểm tra trạng thái hệ thống…</string>
 
-    <string name="current_value_title">Lần reconnect gần nhất</string>
-    <string name="last_reconnect_never">Chưa reconnect lần nào</string>
-    <string name="last_reconnect_value">%1$s
-Lý do: %2$s
-Tổng số lần: %3$d</string>
+    <string name="metric_gms">GOOGLE PLAY SERVICES</string>
+    <string name="metric_doze">DOZE</string>
+    <string name="metric_watchdog">WATCHDOG</string>
+    <string name="metric_fcm">FCM SOCKET</string>
+    <string name="value_checking">Đang kiểm tra</string>
+    <string name="value_installed">Đã cài</string>
+    <string name="value_missing">Không có</string>
+    <string name="value_exempt">Miễn giới hạn</string>
+    <string name="value_limited">Có giới hạn</string>
+    <string name="value_unknown">Không rõ</string>
+    <string name="value_foreground">Foreground</string>
+    <string name="value_background">Background</string>
+    <string name="value_off">Đang tắt</string>
+    <string name="value_unverified">Chưa xác minh</string>
+
+    <string name="current_value_title">RECONNECT GẦN NHẤT</string>
+    <string name="last_reconnect_never">Chưa có lần reconnect nào</string>
+    <string name="reason_none">Chưa có dữ liệu</string>
+    <string name="reconnect_total">tổng số lần</string>
+
+    <string name="quick_actions_title">Hành động nhanh</string>
+    <string name="quick_actions_summary">Dùng reconnect khi nghi ngờ Gmail hoặc ứng dụng ngân hàng bị mất push.</string>
+    <string name="wake_fcm">Reconnect FCM ngay</string>
+    <string name="open_fcm_diag">Mở FCM Diagnostics</string>
+
+    <string name="protection_title">Bảo vệ tự động</string>
+    <string name="automatic_protection">Smart reconnect</string>
+    <string name="automatic_protection_summary">Tự gửi heartbeat khi mạng có lại, đổi mạng, khởi động máy hoặc mở khóa sau thời gian ngủ dài.</string>
+    <string name="persistent_notification">Watchdog thường trực</string>
+    <string name="persistent_notification_summary">Chạy foreground service với thông báo im lặng để ColorOS khó dừng FCM Guard hơn.</string>
+
+    <string name="coloros_title">Tối ưu ColorOS</string>
+    <string name="coloros_summary">Thiết lập theo 3 bước để giảm nguy cơ ColorOS hạn chế ứng dụng nhận push.</string>
+    <string name="open_autostart_manager">Auto launch</string>
+    <string name="autostart_summary">Cho phép ứng dụng tự khởi động khi cần.</string>
+    <string name="open_associated_launch">Associated launch</string>
+    <string name="associated_summary">Cho phép ứng dụng được thành phần khác đánh thức.</string>
+    <string name="open_battery_manager">Battery / Power</string>
+    <string name="battery_summary">Đặt ứng dụng quan trọng về chế độ nền ít bị hạn chế.</string>
+    <string name="open_short">Mở</string>
+    <string name="coloros_settings_unavailable">Không mở được trang ColorOS này</string>
 
     <string name="gms_installed">Google Play Services đã cài</string>
     <string name="gms_missing">Không tìm thấy Google Play Services</string>
     <string name="gms_doze_exempt">GMS đang được miễn tối ưu pin / Doze</string>
     <string name="gms_doze_not_exempt">GMS không nằm trong danh sách miễn Doze</string>
     <string name="gms_doze_unknown">Không đọc được trạng thái Doze của GMS</string>
-    <string name="fcm_connection_unverified">Kết nối FCM socket: app thường không thể xác minh trực tiếp, vì vậy không báo xanh giả</string>
+    <string name="fcm_connection_unverified">Socket FCM chưa thể xác minh bằng API công khai</string>
+
+    <string name="status_enabled">Bảo vệ tự động: bật</string>
+    <string name="status_disabled">Bảo vệ tự động: tắt</string>
+    <string name="notification_mode_foreground">Watchdog: foreground service</string>
+    <string name="notification_mode_quiet">Watchdog: background-only</string>
 
     <string name="service_started">Đã bật bảo vệ FCM</string>
     <string name="service_stopped">Đã tắt bảo vệ FCM</string>
@@ -55,20 +90,19 @@ Tổng số lần: %3$d</string>
     <string name="reason_wake">mở khóa sau sleep</string>
     <string name="reason_fallback">heartbeat dự phòng 30 phút</string>
     <string name="reason_start">watchdog khởi động</string>
+    <string name="reason_manual">reconnect thủ công</string>
+    <string name="reason_enable">bật bảo vệ</string>
+    <string name="reason_boot">khởi động máy</string>
+    <string name="reason_updated">ứng dụng vừa cập nhật</string>
 
-    <string name="coloros_title">ColorOS background</string>
-    <string name="coloros_summary">Mở thẳng các trang quản lý nền của OPlus. Nếu ROM chặn deep link, ứng dụng sẽ rơi về trang cài đặt hệ thống phù hợp.</string>
-    <string name="open_associated_launch">Associated launch</string>
-    <string name="open_battery_manager">Battery / Power manager</string>
-    <string name="coloros_settings_unavailable">Không mở được trang ColorOS này</string>
-
-    <string name="notification_permission_ok">Notification permission: OK</string>
-    <string name="notification_permission_missing">Notification permission: bị chặn</string>
-    <string name="notification_permission_legacy">Notification permission: hệ Android cũ</string>
+    <string name="notification_permission_ok">Notification: OK</string>
+    <string name="notification_permission_missing">Notification: bị chặn</string>
+    <string name="notification_permission_legacy">Notification: hệ Android cũ</string>
     <string name="app_doze_exempt">Doze exempt</string>
     <string name="app_doze_normal">Doze bình thường</string>
 
-    <!-- Legacy resource names retained while the old HyperOS-only classes are removed in a later cleanup. -->
+    <!-- Compatibility resource names retained for older localized resources/classes. -->
+    <string name="status_title">Trạng thái</string>
     <string name="label_key">Settings key</string>
     <string name="label_item">Required item</string>
     <string name="save_configuration">Save configuration</string>
@@ -91,4 +125,5 @@ Tổng số lần: %3$d</string>
     <string name="write_rejected">Write rejected</string>
     <string name="write_failed">Write failed: %1$s</string>
     <string name="notification_repaired">FCM reconnect requested</string>
+    <string name="last_reconnect_value">%1$s · %2$s · %3$d</string>
 </resources>
