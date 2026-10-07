@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <!--
-      Narrow package visibility only for the signals FCM Guard needs. This avoids
-      QUERY_ALL_PACKAGES while allowing best-effort discovery of FCM/GCM receivers
-      and the Google Play services diagnostics activity.
-    -->
     <queries>
         <intent>
             <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -19,7 +14,10 @@
             <action android:name="com.google.android.c2dm.intent.RECEIVE" />
         </intent>
         <package android:name="com.google.android.gms" />
-        <package android:name="com.miui.securitycenter" />
+        <package android:name="com.google.android.gsf" />
+        <package android:name="com.oplus.battery" />
+        <package android:name="com.oplus.athena" />
+        <package android:name="com.oplus.safecenter" />
     </queries>
 
     <application
@@ -30,22 +28,10 @@
         android:localeConfig="@xml/locales_config"
         android:supportsRtl="true">
 
-        <!--
-          FCM Guard intentionally targets SDK 22 so WRITE_SETTINGS can modify Xiaomi's
-          private Settings.System whitelist. Old-target apps can otherwise be placed
-          into legacy aspect-ratio compatibility mode on tall modern displays, which
-          HyperOS shows as a large black area below the app. Explicitly opt the main
-          activity into modern tall/resizable layouts while keeping targetSdk 22.
-        -->
-        <meta-data
-            android:name="android.max_aspect"
-            android:value="3.0" />
-
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:resizeableActivity="true"
-            android:maxAspectRatio="3.0"
             android:configChanges="screenSize|orientation|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -56,7 +42,12 @@
         <service
             android:name=".GuardService"
             android:exported="false"
-            android:stopWithTask="false" />
+            android:stopWithTask="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="User-enabled FCM connectivity watchdog and heartbeat recovery" />
+        </service>
 
         <receiver
             android:name=".BootReceiver"
@@ -64,7 +55,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
