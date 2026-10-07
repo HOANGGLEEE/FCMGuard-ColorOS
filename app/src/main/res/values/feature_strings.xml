@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="fcm_apps_title">Ứng dụng có dấu hiệu dùng FCM</string>
-    <string name="fcm_apps_summary">Quét các ứng dụng khai báo receiver/service FCM hoặc GCM tiêu chuẩn. Đây là nhận diện best-effort, không khẳng định mọi thông báo đều đi qua FCM.</string>
-    <string name="scan_fcm_apps">Kiểm tra ứng dụng FCM</string>
+    <string name="fcm_apps_title">Ứng dụng nhận push</string>
+    <string name="fcm_apps_summary">Quét nhanh các app có manifest signal của Firebase/GCM để ưu tiên kiểm tra Gmail, ngân hàng và ứng dụng nhắn tin.</string>
+    <string name="scan_fcm_apps">Kiểm tra ứng dụng</string>
     <string name="collapse_fcm_apps">Thu gọn danh sách</string>
-    <string name="open_autostart_manager">Auto launch</string>
-    <string name="fcm_apps_not_scanned">Bấm kiểm tra để tạo danh sách ứng dụng cục bộ.</string>
+    <string name="fcm_apps_not_scanned">Chưa quét ứng dụng trên máy.</string>
     <string name="fcm_apps_found">Phát hiện %1$d ứng dụng có khả năng dùng FCM/GCM</string>
     <string name="fcm_apps_status_summary">%1$d detected · %2$d enabled · %3$d need attention · %4$d unknown</string>
     <string name="fcm_autostart_status_unavailable">%1$d FCM apps detected. ColorOS không cung cấp API công khai để đọc Auto launch đáng tin cậy.</string>
@@ -17,7 +16,7 @@
     <string name="autostart_unknown">Unknown</string>
     <string name="autostart_manager_unavailable">Không mở được ColorOS Auto launch</string>
     <string name="app_settings_unavailable">Không mở được cài đặt ứng dụng</string>
-    <string name="fcm_detection_note">App thường không thể đọc chắc chắn Auto launch/Associated launch của mọi package trên ColorOS. FCM Guard sẽ không đoán trạng thái đó; hãy dùng các nút ColorOS phía trên để cấu hình.</string>
+    <string name="fcm_detection_note">Trạng thái Auto launch/Associated launch của app khác không có API công khai đáng tin cậy trên ColorOS. FCM Guard không đoán trạng thái; chạm vào app để mở trang cài đặt của app đó.</string>
 
     <string name="appearance_title">Giao diện</string>
     <string name="appearance_summary">Chỉ thay đổi giao diện, không thêm tác vụ nền.</string>
