@@ -102,7 +102,7 @@
     <string name="app_doze_normal">Doze bình thường</string>
 
     <!-- Compatibility resource names retained for older localized resources/classes. -->
-    <string name="status_title">Trạng thái</string>
+    <string name="status_title">Trạng thái</string>\n    <string name="actions_title">Công cụ</string>
     <string name="label_key">Settings key</string>
     <string name="label_item">Required item</string>
     <string name="save_configuration">Save configuration</string>
