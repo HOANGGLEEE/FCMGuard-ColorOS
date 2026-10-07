@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -30,14 +29,22 @@ public class MainActivity extends Activity {
     private static final int REQUEST_NOTIFICATIONS = 41;
 
     private TextView statusHeadline;
+    private TextView statusBadge;
     private TextView statusText;
-    private TextView currentValueText;
+    private TextView gmsValueText;
+    private TextView dozeValueText;
+    private TextView watchdogValueText;
+    private TextView fcmValueText;
+    private TextView lastReconnectTimeText;
+    private TextView lastReconnectReasonText;
+    private TextView reconnectCountText;
     private TextView fcmAppsStatusText;
     private LinearLayout fcmAppsContainer;
     private Button scanFcmAppsBtn;
     private Switch protectionSwitch;
     private Switch notificationSwitch;
     private RadioGroup appearanceGroup;
+
     private boolean suppressSwitchCallbacks;
     private boolean suppressAppearanceCallbacks;
     private boolean fcmListExpanded;
@@ -63,9 +70,11 @@ public class MainActivity extends Activity {
 
     @Override protected void onResume() {
         super.onResume();
+
         if (GuardPrefs.isEnabled(this)) {
             startProtectionService();
         }
+
         refreshStatus(null);
 
         if (fcmListExpanded) {
@@ -75,8 +84,15 @@ public class MainActivity extends Activity {
 
     private void bindViews() {
         statusHeadline = findViewById(R.id.statusHeadline);
+        statusBadge = findViewById(R.id.statusBadge);
         statusText = findViewById(R.id.statusText);
-        currentValueText = findViewById(R.id.currentValueText);
+        gmsValueText = findViewById(R.id.gmsValueText);
+        dozeValueText = findViewById(R.id.dozeValueText);
+        watchdogValueText = findViewById(R.id.watchdogValueText);
+        fcmValueText = findViewById(R.id.fcmValueText);
+        lastReconnectTimeText = findViewById(R.id.lastReconnectTimeText);
+        lastReconnectReasonText = findViewById(R.id.lastReconnectReasonText);
+        reconnectCountText = findViewById(R.id.reconnectCountText);
         fcmAppsStatusText = findViewById(R.id.fcmAppsStatusText);
         fcmAppsContainer = findViewById(R.id.fcmAppsContainer);
         scanFcmAppsBtn = findViewById(R.id.scanFcmAppsBtn);
@@ -87,7 +103,6 @@ public class MainActivity extends Activity {
 
     private void setupLanguageButton() {
         Button language = findViewById(R.id.languageButton);
-        language.setText(R.string.language);
         language.setOnClickListener(v -> {
             if (Build.VERSION.SDK_INT >= 33) {
                 try {
@@ -105,6 +120,7 @@ public class MainActivity extends Activity {
 
     private void setupAppearance() {
         String mode = ThemeHelper.getMode(this);
+
         suppressAppearanceCallbacks = true;
         if (ThemeHelper.MODE_DARK.equals(mode)) {
             appearanceGroup.check(R.id.themeDark);
@@ -144,6 +160,7 @@ public class MainActivity extends Activity {
             if (suppressSwitchCallbacks) return;
 
             GuardPrefs.setEnabled(this, checked);
+
             if (checked) {
                 if (GuardPrefs.usePersistentNotification(this)) {
                     requestNotificationAccessIfNeeded();
@@ -155,6 +172,7 @@ public class MainActivity extends Activity {
                 stopService(new Intent(this, GuardService.class));
                 toast(getString(R.string.service_stopped));
             }
+
             refreshStatus(null);
         });
 
@@ -162,8 +180,15 @@ public class MainActivity extends Activity {
             if (suppressSwitchCallbacks) return;
 
             GuardPrefs.setPersistentNotification(this, checked);
-            if (checked) requestNotificationAccessIfNeeded();
-            if (GuardPrefs.isEnabled(this)) startProtectionService();
+
+            if (checked) {
+                requestNotificationAccessIfNeeded();
+            }
+
+            if (GuardPrefs.isEnabled(this)) {
+                startProtectionService();
+            }
+
             refreshStatus(null);
         });
     }
@@ -210,9 +235,12 @@ public class MainActivity extends Activity {
 
     private void startProtectionService() {
         Intent service = new Intent(this, GuardService.class);
+
         try {
             boolean persistent = GuardPrefs.usePersistentNotification(this);
-            if (persistent) GuardService.ensureNotificationChannel(this);
+            if (persistent) {
+                GuardService.ensureNotificationChannel(this);
+            }
 
             if (persistent && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(service);
@@ -226,6 +254,7 @@ public class MainActivity extends Activity {
 
     private void requestNotificationAccessIfNeeded() {
         GuardService.ensureNotificationChannel(this);
+
         if (Build.VERSION.SDK_INT >= 33 &&
                 checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
                         != PackageManager.PERMISSION_GRANTED) {
@@ -235,75 +264,118 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void refreshStatus(String firstLine) {
-        boolean gms = isInstalled("com.google.android.gms");
-        boolean enabled = GuardPrefs.isEnabled(this);
+    private void refreshStatus(String actionMessage) {
+        boolean gmsInstalled = isInstalled("com.google.android.gms");
+        boolean protectionEnabled = GuardPrefs.isEnabled(this);
         boolean foregroundVisible =
-                enabled &&
+                protectionEnabled &&
                 GuardPrefs.usePersistentNotification(this) &&
                 GuardService.canShowPersistentNotification(this);
 
+        Boolean dozeExempt = gmsInstalled
+                ? isDozeExempt("com.google.android.gms")
+                : null;
+
         suppressSwitchCallbacks = true;
-        protectionSwitch.setChecked(enabled);
+        protectionSwitch.setChecked(protectionEnabled);
         notificationSwitch.setChecked(GuardPrefs.usePersistentNotification(this));
         suppressSwitchCallbacks = false;
 
-        if (gms && enabled) {
+        if (gmsInstalled && protectionEnabled) {
             statusHeadline.setText(R.string.status_protected);
             statusHeadline.setTextColor(getResources().getColor(R.color.green));
-        } else if (gms) {
+            statusBadge.setText(R.string.status_badge_active);
+            statusBadge.setTextColor(getResources().getColor(R.color.green));
+            statusBadge.setBackgroundResource(R.drawable.success_pill_bg);
+            statusText.setText(actionMessage != null
+                    ? actionMessage
+                    : getString(R.string.status_summary_active));
+        } else if (gmsInstalled) {
             statusHeadline.setText(R.string.status_ready);
             statusHeadline.setTextColor(getResources().getColor(R.color.blue));
+            statusBadge.setText(R.string.status_badge_ready);
+            statusBadge.setTextColor(getResources().getColor(R.color.blue));
+            statusBadge.setBackgroundResource(R.drawable.neutral_pill_bg);
+            statusText.setText(getString(R.string.status_summary_ready));
         } else {
             statusHeadline.setText(R.string.status_attention);
             statusHeadline.setTextColor(getResources().getColor(R.color.red));
+            statusBadge.setText(R.string.status_badge_check);
+            statusBadge.setTextColor(getResources().getColor(R.color.red));
+            statusBadge.setBackgroundResource(R.drawable.error_pill_bg);
+            statusText.setText(getString(R.string.status_summary_attention));
         }
 
-        StringBuilder s = new StringBuilder();
-        if (firstLine != null && !firstLine.isEmpty()) {
-            s.append("✓ ").append(firstLine).append('\n');
-        }
-        s.append(gms ? "✓ " : "✗ ")
-                .append(getString(gms ? R.string.gms_installed : R.string.gms_missing))
-                .append('\n');
+        setMetric(
+                gmsValueText,
+                gmsInstalled ? R.string.value_installed : R.string.value_missing,
+                gmsInstalled ? R.color.green : R.color.red);
 
-        Boolean doze = isDozeExempt("com.google.android.gms");
-        if (doze == null) {
-            s.append("? ").append(getString(R.string.gms_doze_unknown)).append('\n');
+        if (!gmsInstalled) {
+            setMetric(dozeValueText, R.string.value_unknown, R.color.text_secondary);
+        } else if (dozeExempt == null) {
+            setMetric(dozeValueText, R.string.value_unknown, R.color.yellow);
+        } else if (dozeExempt) {
+            setMetric(dozeValueText, R.string.value_exempt, R.color.green);
         } else {
-            s.append(doze ? "✓ " : "⚠ ")
-                    .append(getString(doze
-                            ? R.string.gms_doze_exempt
-                            : R.string.gms_doze_not_exempt))
-                    .append('\n');
+            setMetric(dozeValueText, R.string.value_limited, R.color.yellow);
         }
 
-        s.append(enabled ? "✓ " : "○ ")
-                .append(getString(enabled
-                        ? R.string.status_enabled
-                        : R.string.status_disabled))
-                .append('\n');
+        if (!protectionEnabled) {
+            setMetric(watchdogValueText, R.string.value_off, R.color.text_secondary);
+        } else if (foregroundVisible) {
+            setMetric(watchdogValueText, R.string.value_foreground, R.color.green);
+        } else {
+            setMetric(watchdogValueText, R.string.value_background, R.color.yellow);
+        }
 
-        s.append(foregroundVisible ? "✓ " : "○ ")
-                .append(getString(foregroundVisible
-                        ? R.string.notification_mode_foreground
-                        : R.string.notification_mode_quiet))
-                .append('\n');
-
-        s.append("? ").append(getString(R.string.fcm_connection_unverified));
-        statusText.setText(s.toString());
+        setMetric(fcmValueText, R.string.value_unverified, R.color.yellow);
 
         long last = GuardPrefs.lastReconnectMs(this);
-        if (last <= 0) {
-            currentValueText.setText(R.string.last_reconnect_never);
+        int count = GuardPrefs.reconnectCount(this);
+        reconnectCountText.setText(String.valueOf(count));
+
+        if (last <= 0L) {
+            lastReconnectTimeText.setText("--:--");
+            lastReconnectReasonText.setText(R.string.reason_none);
         } else {
-            String when = DateFormat.getDateTimeInstance(
-                    DateFormat.SHORT, DateFormat.MEDIUM).format(new Date(last));
-            currentValueText.setText(getString(
-                    R.string.last_reconnect_value,
-                    when,
-                    GuardPrefs.lastReconnectReason(this),
-                    GuardPrefs.reconnectCount(this)));
+            Date date = new Date(last);
+            String time = DateFormat.getTimeInstance(DateFormat.MEDIUM).format(date);
+            String day = DateFormat.getDateInstance(DateFormat.SHORT).format(date);
+            lastReconnectTimeText.setText(time);
+            lastReconnectReasonText.setText(
+                    prettyReconnectReason(GuardPrefs.lastReconnectReason(this)) + " · " + day);
+        }
+    }
+
+    private void setMetric(TextView view, int textRes, int colorRes) {
+        view.setText(textRes);
+        view.setTextColor(getResources().getColor(colorRes));
+    }
+
+    private String prettyReconnectReason(String reason) {
+        if (reason == null) return getString(R.string.reason_none);
+
+        switch (reason) {
+            case "manual":
+                return getString(R.string.reason_manual);
+            case "manual_enable":
+                return getString(R.string.reason_enable);
+            case "network_available":
+            case "network_changed":
+                return getString(R.string.reason_network);
+            case "wake_after_sleep":
+                return getString(R.string.reason_wake);
+            case "fallback_30m":
+                return getString(R.string.reason_fallback);
+            case "boot":
+                return getString(R.string.reason_boot);
+            case "package_replaced":
+                return getString(R.string.reason_updated);
+            case "service_start":
+                return getString(R.string.reason_start);
+            default:
+                return reason;
         }
     }
 
@@ -318,6 +390,7 @@ public class MainActivity extends Activity {
 
     private Boolean isDozeExempt(String packageName) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return null;
+
         try {
             PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
             return pm != null && pm.isIgnoringBatteryOptimizations(packageName);
@@ -350,9 +423,16 @@ public class MainActivity extends Activity {
     private void addFcmAppRow(FcmAppScanner.AppEntry app) {
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.VERTICAL);
-        row.setPadding(0, dp(9), 0, dp(9));
+        row.setPadding(dp(12), dp(11), dp(12), dp(11));
+        row.setBackgroundResource(R.drawable.setting_row_bg);
         row.setClickable(true);
+        row.setFocusable(true);
         row.setOnClickListener(v -> openPackageDetails(app.packageName));
+
+        LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        rowParams.topMargin = dp(8);
 
         TextView name = new TextView(this);
         name.setText(app.label);
@@ -370,17 +450,12 @@ public class MainActivity extends Activity {
         details.setText(buildAppStatus(app.packageName));
         details.setTextColor(getResources().getColor(R.color.text_secondary));
         details.setTextSize(11.5f);
-        details.setPadding(0, dp(5), 0, 0);
+        details.setPadding(0, dp(6), 0, 0);
 
         row.addView(name);
         row.addView(pkg);
         row.addView(details);
-        fcmAppsContainer.addView(row);
-
-        View divider = new View(this);
-        divider.setBackgroundColor(getResources().getColor(R.color.divider));
-        fcmAppsContainer.addView(divider, new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, dp(1)));
+        fcmAppsContainer.addView(row, rowParams);
     }
 
     private String buildAppStatus(String packageName) {
@@ -390,12 +465,14 @@ public class MainActivity extends Activity {
             boolean notificationGranted = getPackageManager().checkPermission(
                     Manifest.permission.POST_NOTIFICATIONS,
                     packageName) == PackageManager.PERMISSION_GRANTED;
+
             out.append(notificationGranted ? "✓ " : "⚠ ")
                     .append(getString(notificationGranted
                             ? R.string.notification_permission_ok
                             : R.string.notification_permission_missing));
         } else {
-            out.append("✓ ").append(getString(R.string.notification_permission_legacy));
+            out.append("✓ ")
+                    .append(getString(R.string.notification_permission_legacy));
         }
 
         Boolean doze = isDozeExempt(packageName);
@@ -406,6 +483,7 @@ public class MainActivity extends Activity {
                             ? R.string.app_doze_exempt
                             : R.string.app_doze_normal));
         }
+
         return out.toString();
     }
 
@@ -433,9 +511,13 @@ public class MainActivity extends Activity {
             PackageInfo info = getPackageManager().getPackageInfo(
                     "com.google.android.gms",
                     PackageManager.GET_ACTIVITIES);
+
             if (info.activities != null) {
                 for (ActivityInfo activity : info.activities) {
-                    String n = activity.name == null ? "" : activity.name.toLowerCase();
+                    String n = activity.name == null
+                            ? ""
+                            : activity.name.toLowerCase();
+
                     if (n.contains("diagnostic") && n.contains("gcm")) {
                         if (startGooglePlayServicesActivity(activity.name)) return;
                     }
@@ -460,7 +542,8 @@ public class MainActivity extends Activity {
     }
 
     private int dp(int value) {
-        return Math.round(value * getResources().getDisplayMetrics().density);
+        return Math.round(
+                value * getResources().getDisplayMetrics().density);
     }
 
     private void toast(String text) {
