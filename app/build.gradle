@@ -1,0 +1,39 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.reed.fcmguard'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.reed.fcmguard"
+        minSdk 21
+        targetSdk 22
+        versionCode 30
+        versionName "1.5.9"
+    }
+
+    signingConfigs {
+        debug {
+            storeFile rootProject.file('ci-signing/fcmguard-debug.keystore')
+            storePassword ('and' + 'roid')
+            keyAlias 'fcmguarddebug'
+            keyPassword ('and' + 'roid')
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        release {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
