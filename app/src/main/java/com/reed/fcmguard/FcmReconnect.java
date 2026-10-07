@@ -5,7 +5,10 @@ import android.content.Intent;
 
 /**
  * Best-effort FCM/MCS reconnect kick without ADB, Shizuku or root.
- * Mirrors the heartbeat intents used by HeartbeatFixerForFCM.
+ *
+ * This does not start Google Play services private components directly. It sends the
+ * heartbeat intents that current FCM Guard already uses and lets Google Play services
+ * decide whether its long-lived transport needs to reconnect.
  */
 public final class FcmReconnect {
     private static final String ACTION_GTALK_HEARTBEAT =
@@ -21,6 +24,10 @@ public final class FcmReconnect {
     private FcmReconnect() {}
 
     public static boolean kick(Context context) {
+        return kick(context, "manual");
+    }
+
+    public static boolean kick(Context context, String reason) {
         boolean sent = false;
         for (String target : TARGET_PACKAGES) {
             try {
@@ -30,6 +37,7 @@ public final class FcmReconnect {
             } catch (Throwable ignored) {
             }
         }
+        if (sent) GuardPrefs.recordReconnect(context, reason);
         return sent;
     }
 }

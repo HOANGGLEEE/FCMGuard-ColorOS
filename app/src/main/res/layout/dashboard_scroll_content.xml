@@ -5,89 +5,790 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingLeft="@dimen/page_horizontal_padding"
-    android:paddingTop="0dp"
+    android:paddingTop="@dimen/page_top_padding"
     android:paddingRight="@dimen/page_horizontal_padding"
     android:paddingBottom="@dimen/content_bottom_padding">
 
+    <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/hero_bg"
+        android:padding="@dimen/hero_inner_padding">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_name"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/hero_title_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/subtitle"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/hero_subtitle_size"
+                    android:lineSpacingExtra="2dp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/languageButton"
+                android:layout_width="@dimen/language_button_width"
+                android:layout_height="@dimen/language_button_height"
+                android:layout_marginLeft="@dimen/language_button_margin_start"
+                android:background="@drawable/hero_pill_bg"
+                android:text="@string/language"
+                android:textAllCaps="false"
+                android:textColor="@color/blue"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:elevation="0dp"
+                android:stateListAnimator="@null" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/tech_pill_bg"
+            android:paddingLeft="10dp"
+            android:paddingTop="6dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="6dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/core_badge"
+                android:textColor="@color/blue"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- System health -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/card_gap"
         android:orientation="vertical"
         android:background="@drawable/card_bg">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/protection_title" android:textColor="@color/text_primary" android:textSize="16sp" android:textStyle="bold" android:paddingBottom="3dp" />
-        <Switch android:id="@+id/protectionSwitch" android:layout_width="match_parent" android:layout_height="48dp" android:text="@string/automatic_protection" android:textColor="@color/text_primary" android:textSize="15sp" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/automatic_protection_summary" android:textColor="@color/text_secondary" android:textSize="12sp" android:lineSpacingExtra="2dp" />
-        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginTop="12dp" android:layout_marginBottom="4dp" />
-        <Switch android:id="@+id/notificationSwitch" android:layout_width="match_parent" android:layout_height="48dp" android:text="@string/persistent_notification" android:textColor="@color/text_primary" android:textSize="15sp" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/persistent_notification_summary" android:textColor="@color/text_secondary" android:textSize="12sp" android:lineSpacingExtra="2dp" />
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/card_bg"
-        android:layout_marginTop="@dimen/card_gap">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/actions_title" android:textColor="@color/text_primary" android:textSize="16sp" android:textStyle="bold" android:paddingBottom="9dp" />
-        <Button android:id="@+id/repairBtn" android:layout_width="match_parent" android:layout_height="50dp" android:text="@string/repair_now" android:textAllCaps="false" android:textColor="@android:color/white" android:textStyle="bold" android:background="@drawable/primary_button_bg" android:elevation="0dp" android:stateListAnimator="@null" />
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="8dp">
-            <Button android:id="@+id/wakeBtn" android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1" android:text="@string/wake_fcm" android:textAllCaps="false" android:textColor="@color/text_primary" android:textSize="13sp" android:background="@drawable/secondary_button_bg" android:elevation="0dp" android:stateListAnimator="@null" />
-            <Space android:layout_width="8dp" android:layout_height="1dp" />
-            <Button android:id="@+id/diagBtn" android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1" android:text="@string/open_fcm_diag" android:textAllCaps="false" android:textColor="@color/text_primary" android:textSize="13sp" android:background="@drawable/secondary_button_bg" android:elevation="0dp" android:stateListAnimator="@null" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/system_health_title"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.04" />
+
+                <TextView
+                    android:id="@+id/statusHeadline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text="@string/status_ready"
+                    android:textColor="@color/green"
+                    android:textSize="27sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/statusBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/success_pill_bg"
+                android:paddingLeft="11dp"
+                android:paddingTop="7dp"
+                android:paddingRight="11dp"
+                android:paddingBottom="7dp"
+                android:text="@string/status_badge_active"
+                android:textColor="@color/green"
+                android:textSize="11sp"
+                android:textStyle="bold" />
         </LinearLayout>
-        <Button android:id="@+id/permissionBtn" android:layout_width="match_parent" android:layout_height="48dp" android:layout_marginTop="8dp" android:text="@string/grant_modify" android:textAllCaps="false" android:textColor="@color/blue" android:textStyle="bold" android:background="@drawable/secondary_button_bg" android:elevation="0dp" android:stateListAnimator="@null" />
+
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/status_summary_placeholder"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:lineSpacingExtra="2dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginRight="5dp"
+                android:orientation="vertical"
+                android:background="@drawable/metric_bg"
+                android:padding="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/metric_gms"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/gmsValueText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/value_checking"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:maxLines="2" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="5dp"
+                android:orientation="vertical"
+                android:background="@drawable/metric_bg"
+                android:padding="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/metric_doze"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/dozeValueText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/value_checking"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:maxLines="2" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginRight="5dp"
+                android:orientation="vertical"
+                android:background="@drawable/metric_bg"
+                android:padding="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/metric_watchdog"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/watchdogValueText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/value_checking"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:maxLines="2" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="5dp"
+                android:orientation="vertical"
+                android:background="@drawable/metric_bg"
+                android:padding="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/metric_fcm"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/fcmValueText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/value_unverified"
+                    android:textColor="@color/yellow"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:maxLines="2" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="14dp"
+            android:background="@color/divider" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/current_value_title"
+            android:textColor="@color/text_secondary"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.04" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/lastReconnectTimeText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="--:--"
+                    android:textColor="@color/text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/lastReconnectReasonText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/reason_none"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/reconnectCountText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="@color/blue"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/reconnect_total"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
+    <!-- Quick actions -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/card_gap"
         android:orientation="vertical"
-        android:background="@drawable/card_bg"
-        android:layout_marginTop="@dimen/card_gap">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/fcm_apps_title" android:textColor="@color/text_primary" android:textSize="16sp" android:textStyle="bold" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/fcm_apps_summary" android:textColor="@color/text_secondary" android:textSize="12sp" android:lineSpacingExtra="2dp" android:paddingTop="5dp" />
-        <Button android:id="@+id/scanFcmAppsBtn" android:layout_width="match_parent" android:layout_height="48dp" android:layout_marginTop="12dp" android:text="@string/scan_fcm_apps" android:textAllCaps="false" android:textColor="@android:color/white" android:textStyle="bold" android:background="@drawable/primary_button_bg" android:elevation="0dp" android:stateListAnimator="@null" />
-        <Button android:id="@+id/openAutostartBtn" android:layout_width="match_parent" android:layout_height="48dp" android:layout_marginTop="8dp" android:text="@string/open_autostart_manager" android:textAllCaps="false" android:textColor="@color/text_primary" android:background="@drawable/secondary_button_bg" android:elevation="0dp" android:stateListAnimator="@null" />
-        <TextView android:id="@+id/fcmAppsStatusText" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/fcm_apps_not_scanned" android:textColor="@color/text_secondary" android:textSize="12sp" android:paddingTop="11dp" />
-        <LinearLayout android:id="@+id/fcmAppsContainer" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingTop="4dp" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/fcm_detection_note" android:textColor="@color/text_secondary" android:textSize="11sp" android:lineSpacingExtra="2dp" android:paddingTop="9dp" />
+        android:background="@drawable/card_bg">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/quick_actions_title"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/quick_actions_summary"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/wakeBtn"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="14dp"
+            android:text="@string/wake_fcm"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:background="@drawable/primary_button_bg"
+            android:elevation="0dp"
+            android:stateListAnimator="@null" />
+
+        <Button
+            android:id="@+id/diagBtn"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/open_fcm_diag"
+            android:textAllCaps="false"
+            android:textColor="@color/text_primary"
+            android:background="@drawable/secondary_button_bg"
+            android:elevation="0dp"
+            android:stateListAnimator="@null" />
     </LinearLayout>
 
+    <!-- Protection -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/card_gap"
         android:orientation="vertical"
-        android:background="@drawable/card_bg"
-        android:layout_marginTop="@dimen/card_gap">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/advanced_title" android:textColor="@color/text_primary" android:textSize="16sp" android:textStyle="bold" android:paddingBottom="10dp" />
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/label_key" android:textColor="@color/text_secondary" android:textSize="10sp" android:textStyle="bold" />
-        <EditText android:id="@+id/keyEdit" android:layout_width="match_parent" android:layout_height="48dp" android:layout_marginTop="5dp" android:singleLine="true" android:text="@string/default_key" android:textSize="14sp" android:textColor="@color/text_primary" android:background="@drawable/input_bg" android:paddingLeft="12dp" android:paddingRight="12dp" />
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/label_item" android:textColor="@color/text_secondary" android:textSize="10sp" android:textStyle="bold" android:paddingTop="10dp" />
-        <EditText android:id="@+id/itemEdit" android:layout_width="match_parent" android:layout_height="48dp" android:layout_marginTop="5dp" android:singleLine="true" android:text="@string/default_required_item" android:textSize="14sp" android:textColor="@color/text_primary" android:background="@drawable/input_bg" android:paddingLeft="12dp" android:paddingRight="12dp" />
-        <Button android:id="@+id/saveBtn" android:layout_width="match_parent" android:layout_height="46dp" android:layout_marginTop="10dp" android:text="@string/save_configuration" android:textAllCaps="false" android:textColor="@color/text_primary" android:background="@drawable/secondary_button_bg" android:elevation="0dp" android:stateListAnimator="@null" />
+        android:background="@drawable/card_bg">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/protection_title"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            android:background="@drawable/setting_row_bg"
+            android:paddingLeft="12dp"
+            android:paddingTop="8dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="10dp">
+
+            <Switch
+                android:id="@+id/protectionSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:text="@string/automatic_protection"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/automatic_protection_summary"
+                android:textColor="@color/text_secondary"
+                android:textSize="11.5sp"
+                android:lineSpacingExtra="2dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            android:background="@drawable/setting_row_bg"
+            android:paddingLeft="12dp"
+            android:paddingTop="8dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="10dp">
+
+            <Switch
+                android:id="@+id/notificationSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:text="@string/persistent_notification"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/persistent_notification_summary"
+                android:textColor="@color/text_secondary"
+                android:textSize="11.5sp"
+                android:lineSpacingExtra="2dp" />
+        </LinearLayout>
     </LinearLayout>
 
+    <!-- ColorOS optimization checklist -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/card_gap"
         android:orientation="vertical"
-        android:background="@drawable/info_card_bg"
-        android:layout_marginTop="@dimen/card_gap">
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/helper_text" android:textColor="@color/text_secondary" android:textSize="12sp" android:lineSpacingExtra="2dp" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/note_text" android:textColor="@color/text_secondary" android:textSize="12sp" android:lineSpacingExtra="2dp" android:paddingTop="7dp" />
+        android:background="@drawable/card_bg">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/coloros_title"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/coloros_summary"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:background="@drawable/setting_row_bg"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:gravity="center"
+                android:background="@drawable/step_badge_bg"
+                android:text="01"
+                android:textColor="@color/blue"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/open_autostart_manager"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/autostart_summary"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/openAutostartBtn"
+                android:layout_width="72dp"
+                android:layout_height="40dp"
+                android:background="@drawable/mini_button_bg"
+                android:text="@string/open_short"
+                android:textAllCaps="false"
+                android:textColor="@color/blue"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:elevation="0dp"
+                android:stateListAnimator="@null" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:background="@drawable/setting_row_bg"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:gravity="center"
+                android:background="@drawable/step_badge_bg"
+                android:text="02"
+                android:textColor="@color/blue"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/open_associated_launch"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/associated_summary"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/openAssociateBtn"
+                android:layout_width="72dp"
+                android:layout_height="40dp"
+                android:background="@drawable/mini_button_bg"
+                android:text="@string/open_short"
+                android:textAllCaps="false"
+                android:textColor="@color/blue"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:elevation="0dp"
+                android:stateListAnimator="@null" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:background="@drawable/setting_row_bg"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:gravity="center"
+                android:background="@drawable/step_badge_bg"
+                android:text="03"
+                android:textColor="@color/blue"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/open_battery_manager"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/battery_summary"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/openBatteryBtn"
+                android:layout_width="72dp"
+                android:layout_height="40dp"
+                android:background="@drawable/mini_button_bg"
+                android:text="@string/open_short"
+                android:textAllCaps="false"
+                android:textColor="@color/blue"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:elevation="0dp"
+                android:stateListAnimator="@null" />
+        </LinearLayout>
     </LinearLayout>
 
+    <!-- FCM apps -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/card_gap"
         android:orientation="vertical"
-        android:background="@drawable/card_bg"
-        android:layout_marginTop="@dimen/card_gap">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/appearance_title" android:textColor="@color/text_primary" android:textSize="16sp" android:textStyle="bold" />
-        <RadioGroup android:id="@+id/appearanceGroup" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:paddingTop="8dp">
-            <RadioButton android:id="@+id/themeSystem" android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1" android:text="@string/theme_system" android:textColor="@color/text_primary" android:textSize="12sp" />
-            <RadioButton android:id="@+id/themeLight" android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1" android:text="@string/theme_light" android:textColor="@color/text_primary" android:textSize="12sp" />
-            <RadioButton android:id="@+id/themeDark" android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1" android:text="@string/theme_dark" android:textColor="@color/text_primary" android:textSize="12sp" />
+        android:background="@drawable/card_bg">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fcm_apps_title"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/fcm_apps_summary"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/scanFcmAppsBtn"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:text="@string/scan_fcm_apps"
+            android:textAllCaps="false"
+            android:textColor="@color/blue"
+            android:textStyle="bold"
+            android:background="@drawable/secondary_button_bg"
+            android:elevation="0dp"
+            android:stateListAnimator="@null" />
+
+        <TextView
+            android:id="@+id/fcmAppsStatusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/fcm_apps_not_scanned"
+            android:textColor="@color/text_secondary"
+            android:textSize="11.5sp" />
+
+        <LinearLayout
+            android:id="@+id/fcmAppsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="4dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/info_note_bg"
+            android:padding="10dp"
+            android:text="@string/fcm_detection_note"
+            android:textColor="@color/text_secondary"
+            android:textSize="10.5sp"
+            android:lineSpacingExtra="1dp" />
+    </LinearLayout>
+
+    <!-- Appearance -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/card_gap"
+        android:orientation="vertical"
+        android:background="@drawable/card_bg">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/appearance_title"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/appearanceGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingTop="8dp">
+
+            <RadioButton
+                android:id="@+id/themeSystem"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="@string/theme_system"
+                android:textColor="@color/text_primary"
+                android:textSize="12sp" />
+
+            <RadioButton
+                android:id="@+id/themeLight"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="@string/theme_light"
+                android:textColor="@color/text_primary"
+                android:textSize="12sp" />
+
+            <RadioButton
+                android:id="@+id/themeDark"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="@string/theme_dark"
+                android:textColor="@color/text_primary"
+                android:textSize="12sp" />
         </RadioGroup>
     </LinearLayout>
 

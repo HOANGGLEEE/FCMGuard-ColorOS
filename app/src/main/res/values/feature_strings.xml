@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="fcm_apps_title">FCM app assistant</string>
-    <string name="fcm_apps_summary">Detect installed apps that declare standard FCM/GCM receive components, then verify their HyperOS Autostart state when the ROM exposes it.</string>
-    <string name="scan_fcm_apps">Scan FCM apps</string>
-    <string name="collapse_fcm_apps">Collapse app list</string>
-    <string name="open_autostart_manager">Configure all in HyperOS</string>
-    <string name="fcm_apps_not_scanned">Tap Scan FCM apps to build the local list.</string>
-    <string name="fcm_apps_found">%1$d FCM-capable apps detected</string>
+    <string name="fcm_apps_title">Ứng dụng nhận push</string>
+    <string name="fcm_apps_summary">Quét nhanh các app có manifest signal của Firebase/GCM để ưu tiên kiểm tra Gmail, ngân hàng và ứng dụng nhắn tin.</string>
+    <string name="scan_fcm_apps">Kiểm tra ứng dụng</string>
+    <string name="collapse_fcm_apps">Thu gọn danh sách</string>
+    <string name="fcm_apps_not_scanned">Chưa quét ứng dụng trên máy.</string>
+    <string name="fcm_apps_found">Phát hiện %1$d ứng dụng có khả năng dùng FCM/GCM</string>
     <string name="fcm_apps_status_summary">%1$d detected · %2$d enabled · %3$d need attention · %4$d unknown</string>
-    <string name="fcm_autostart_status_unavailable">%1$d FCM apps detected. HyperOS did not expose readable Autostart state on this build. Use Configure all in HyperOS.</string>
-    <string name="no_fcm_apps">No user-facing FCM apps were detected.</string>
-    <string name="app_settings">Autostart</string>
+    <string name="fcm_autostart_status_unavailable">%1$d FCM apps detected. ColorOS không cung cấp API công khai để đọc Auto launch đáng tin cậy.</string>
+    <string name="no_fcm_apps">Không phát hiện ứng dụng FCM/GCM qua các tín hiệu manifest đang quét.</string>
+    <string name="app_settings">Cài đặt ứng dụng</string>
     <string name="autostart_enabled">Enabled</string>
     <string name="autostart_partial">Partial</string>
     <string name="autostart_disabled">Disabled</string>
     <string name="autostart_unknown">Unknown</string>
-    <string name="autostart_manager_unavailable">HyperOS Autostart settings could not be opened</string>
-    <string name="app_settings_unavailable">App settings could not be opened</string>
-    <string name="fcm_detection_note">Autostart status is read-only and best-effort. Unknown means HyperOS blocked or did not expose the vendor AppOps query; FCM Guard never treats Unknown as Disabled.</string>
+    <string name="autostart_manager_unavailable">Không mở được ColorOS Auto launch</string>
+    <string name="app_settings_unavailable">Không mở được cài đặt ứng dụng</string>
+    <string name="fcm_detection_note">Trạng thái Auto launch/Associated launch của app khác không có API công khai đáng tin cậy trên ColorOS. FCM Guard không đoán trạng thái; chạm vào app để mở trang cài đặt của app đó.</string>
 
-    <string name="appearance_title">Appearance</string>
-    <string name="appearance_summary">Default: follow the system. This changes only the UI theme and adds no background work.</string>
-    <string name="theme_system">System</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">Dark</string>
+    <string name="appearance_title">Giao diện</string>
+    <string name="appearance_summary">Chỉ thay đổi giao diện, không thêm tác vụ nền.</string>
+    <string name="theme_system">Hệ thống</string>
+    <string name="theme_light">Sáng</string>
+    <string name="theme_dark">Tối</string>
 </resources>

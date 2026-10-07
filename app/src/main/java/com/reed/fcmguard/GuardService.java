@@ -6,116 +6,182 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ContentResolver;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.database.ContentObserver;
-import android.net.Uri;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.provider.Settings;
 
 public class GuardService extends Service {
-    // v2 intentionally uses a new channel id. Android does not allow an app to raise
-    // an existing channel from IMPORTANCE_MIN to IMPORTANCE_LOW after creation.
-    private static final String CHANNEL_ID = "fcm_guard_persistent_v2";
+    private static final String CHANNEL_ID = "fcm_guard_coloros_v1";
     private static final int NOTIFICATION_ID = 426;
+
     private static final long FALLBACK_INTERVAL_MS = 30L * 60L * 1000L;
+    private static final long NETWORK_RECONNECT_MIN_GAP_MS = 20L * 1000L;
+    private static final long USER_PRESENT_MIN_GAP_MS = 15L * 60L * 1000L;
+
     private final Handler handler = new Handler(Looper.getMainLooper());
-    private ContentObserver observer;
+
+    private ConnectivityManager connectivityManager;
+    private ConnectivityManager.NetworkCallback networkCallback;
+    private BroadcastReceiver userPresentReceiver;
     private boolean foreground;
 
     private final Runnable fallbackCheck = new Runnable() {
         @Override public void run() {
-            repair(false);
+            long age = System.currentTimeMillis() - GuardPrefs.lastReconnectMs(GuardService.this);
+            if (age >= FALLBACK_INTERVAL_MS - 60_000L) {
+                reconnect("fallback_30m");
+            }
             handler.postDelayed(this, FALLBACK_INTERVAL_MS);
-        }
-    };
-
-    private final Runnable repairDebounced = new Runnable() {
-        @Override public void run() {
-            repair(true);
         }
     };
 
     @Override public void onCreate() {
         super.onCreate();
         applyExecutionMode();
-        registerObserver();
-        SettingsGuard.rememberIfUseful(this);
-        handler.post(fallbackCheck);
+        registerNetworkMonitor();
+        registerUserPresentReceiver();
+        handler.postDelayed(fallbackCheck, FALLBACK_INTERVAL_MS);
     }
 
     @Override public int onStartCommand(Intent intent, int flags, int startId) {
-        SettingsGuard.setProtectionEnabled(this, true);
-        registerObserver();
+        GuardPrefs.setEnabled(this, true);
         applyExecutionMode();
+
+        long age = System.currentTimeMillis() - GuardPrefs.lastReconnectMs(this);
+        if (age > 5_000L) {
+            reconnect("service_start");
+        }
+
         handler.removeCallbacks(fallbackCheck);
-        handler.post(fallbackCheck);
+        handler.postDelayed(fallbackCheck, FALLBACK_INTERVAL_MS);
         return START_STICKY;
     }
 
-    private void repair(boolean notifyFailure) {
-        SettingsGuard.Result result = SettingsGuard.repair(this);
-        if (result.changed) {
-            FcmReconnect.kick(this);
-            if (foreground) refreshNotification(getString(R.string.notification_repaired));
-        } else if (!result.success && notifyFailure && foreground) {
-            refreshNotification(result.message);
+    private void registerNetworkMonitor() {
+        connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        if (connectivityManager == null || networkCallback != null) return;
+
+        networkCallback = new ConnectivityManager.NetworkCallback() {
+            @Override public void onAvailable(Network network) {
+                scheduleReconnect("network_available", 3_000L, NETWORK_RECONNECT_MIN_GAP_MS);
+            }
+
+            @Override public void onCapabilitiesChanged(
+                    Network network, NetworkCapabilities capabilities) {
+                if (capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
+                    scheduleReconnect("network_changed", 3_000L, NETWORK_RECONNECT_MIN_GAP_MS);
+                }
+            }
+        };
+
+        try {
+            NetworkRequest request = new NetworkRequest.Builder()
+                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                    .build();
+            connectivityManager.registerNetworkCallback(request, networkCallback);
+        } catch (Throwable ignored) {
+            networkCallback = null;
         }
     }
 
-    private void registerObserver() {
-        ContentResolver resolver = getContentResolver();
-        try {
-            if (observer != null) resolver.unregisterContentObserver(observer);
-        } catch (Throwable ignored) {}
+    private void registerUserPresentReceiver() {
+        if (userPresentReceiver != null) return;
 
-        observer = new ContentObserver(handler) {
-            @Override public void onChange(boolean selfChange, Uri uri) {
-                handler.removeCallbacks(repairDebounced);
-                handler.postDelayed(repairDebounced, 400L);
+        userPresentReceiver = new BroadcastReceiver() {
+            @Override public void onReceive(Context context, Intent intent) {
+                if (Intent.ACTION_USER_PRESENT.equals(intent.getAction())) {
+                    long age = System.currentTimeMillis() - GuardPrefs.lastReconnectMs(context);
+                    if (age >= USER_PRESENT_MIN_GAP_MS) {
+                        scheduleReconnect("wake_after_sleep", 1_000L, USER_PRESENT_MIN_GAP_MS);
+                    }
+                }
             }
         };
-        resolver.registerContentObserver(
-                Settings.System.getUriFor(SettingsGuard.getConfiguredKey(this)),
-                false,
-                observer
-        );
+
+        IntentFilter filter = new IntentFilter(Intent.ACTION_USER_PRESENT);
+        try {
+            if (Build.VERSION.SDK_INT >= 33) {
+                registerReceiver(userPresentReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+            } else {
+                registerReceiver(userPresentReceiver, filter);
+            }
+        } catch (Throwable ignored) {
+            userPresentReceiver = null;
+        }
+    }
+
+    private void scheduleReconnect(
+            String reason, long delayMs, long minimumGapMs) {
+        handler.postDelayed(() -> {
+            long age = System.currentTimeMillis() - GuardPrefs.lastReconnectMs(GuardService.this);
+            if (age >= minimumGapMs) {
+                reconnect(reason);
+            }
+        }, delayMs);
+    }
+
+    private void reconnect(String reason) {
+        boolean sent = FcmReconnect.kick(this, reason);
+        if (sent && foreground) {
+            refreshNotification(getString(
+                    R.string.notification_reconnected,
+                    prettyReason(reason)));
+        }
+    }
+
+    private String prettyReason(String reason) {
+        if ("network_available".equals(reason) || "network_changed".equals(reason)) {
+            return getString(R.string.reason_network);
+        }
+        if ("wake_after_sleep".equals(reason)) {
+            return getString(R.string.reason_wake);
+        }
+        if ("fallback_30m".equals(reason)) {
+            return getString(R.string.reason_fallback);
+        }
+        return getString(R.string.reason_start);
     }
 
     private void applyExecutionMode() {
-        if (SettingsGuard.usePersistentNotification(this)) {
+        if (GuardPrefs.usePersistentNotification(this)) {
             ensureNotificationChannel(this);
-            startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.notification_active)));
+            startForeground(
+                    NOTIFICATION_ID,
+                    buildNotification(getString(R.string.notification_active)));
             foreground = true;
         } else {
             if (foreground) stopForeground(true);
-            NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            NotificationManager nm =
+                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             if (nm != null) nm.cancel(NOTIFICATION_ID);
             foreground = false;
         }
     }
 
-    /**
-     * Creates the visible-but-silent foreground-service channel. Returns true only
-     * when this call created the channel for the first time.
-     */
     public static boolean ensureNotificationChannel(Context context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return false;
-        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        NotificationManager nm =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (nm == null) return false;
 
         boolean created = nm.getNotificationChannel(CHANNEL_ID) == null;
         NotificationChannel channel = new NotificationChannel(
                 CHANNEL_ID,
                 context.getString(R.string.notification_channel_name),
-                NotificationManager.IMPORTANCE_LOW
-        );
-        channel.setDescription(context.getString(R.string.notification_channel_description));
+                NotificationManager.IMPORTANCE_LOW);
+        channel.setDescription(
+                context.getString(R.string.notification_channel_description));
         channel.setShowBadge(false);
         channel.enableVibration(false);
         channel.enableLights(false);
@@ -125,51 +191,52 @@ public class GuardService extends Service {
         return created;
     }
 
-    /** True when Android will actually place the foreground notification in the shade. */
     public static boolean canShowPersistentNotification(Context context) {
-        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager nm =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (nm == null) return false;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !nm.areNotificationsEnabled()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
+                !nm.areNotificationsEnabled()) {
             return false;
         }
+
         if (Build.VERSION.SDK_INT >= 33 &&
-                context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+                        != PackageManager.PERMISSION_GRANTED) {
             return false;
         }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = nm.getNotificationChannel(CHANNEL_ID);
-            return channel != null && channel.getImportance() != NotificationManager.IMPORTANCE_NONE;
+            return channel != null &&
+                    channel.getImportance() != NotificationManager.IMPORTANCE_NONE;
         }
+
         return true;
     }
 
-    @Override public void onDestroy() {
-        handler.removeCallbacksAndMessages(null);
-        try {
-            if (observer != null) getContentResolver().unregisterContentObserver(observer);
-        } catch (Throwable ignored) {}
-        super.onDestroy();
-    }
-
-    @Override public IBinder onBind(Intent intent) { return null; }
-
     private void refreshNotification(String text) {
         if (!foreground) return;
-        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        NotificationManager nm =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (nm != null) nm.notify(NOTIFICATION_ID, buildNotification(text));
     }
 
     private Notification buildNotification(String text) {
         Intent open = new Intent(this, MainActivity.class);
         PendingIntent pi = PendingIntent.getActivity(
-                this, 0, open, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+                this,
+                0,
+                open,
+                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification.Builder builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             builder = new Notification.Builder(this, CHANNEL_ID);
         } else {
-            builder = new Notification.Builder(this).setPriority(Notification.PRIORITY_LOW);
+            builder = new Notification.Builder(this)
+                    .setPriority(Notification.PRIORITY_LOW);
         }
 
         return builder
@@ -183,5 +250,29 @@ public class GuardService extends Service {
                 .setOnlyAlertOnce(true)
                 .setShowWhen(false)
                 .build();
+    }
+
+    @Override public void onDestroy() {
+        handler.removeCallbacksAndMessages(null);
+
+        if (connectivityManager != null && networkCallback != null) {
+            try {
+                connectivityManager.unregisterNetworkCallback(networkCallback);
+            } catch (Throwable ignored) {
+            }
+        }
+
+        if (userPresentReceiver != null) {
+            try {
+                unregisterReceiver(userPresentReceiver);
+            } catch (Throwable ignored) {
+            }
+        }
+
+        super.onDestroy();
+    }
+
+    @Override public IBinder onBind(Intent intent) {
+        return null;
     }
 }
